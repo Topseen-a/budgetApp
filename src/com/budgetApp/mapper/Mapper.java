@@ -1,14 +1,13 @@
 package com.budgetApp.mapper;
 
-import com.budgetApp.data.models.Category;
-import com.budgetApp.data.models.Expense;
-import com.budgetApp.data.models.Income;
-import com.budgetApp.data.models.User;
+import com.budgetApp.data.models.*;
 import com.budgetApp.dtos.requests.AddExpenseRequest;
 import com.budgetApp.dtos.requests.AddIncomeRequest;
+import com.budgetApp.dtos.requests.CreateBudgetRequest;
 import com.budgetApp.dtos.requests.CreateUserRequest;
 import com.budgetApp.dtos.responses.AddExpenseResponse;
 import com.budgetApp.dtos.responses.AddIncomeResponse;
+import com.budgetApp.dtos.responses.CreateBudgetResponse;
 import com.budgetApp.dtos.responses.CreateUserResponse;
 import com.budgetApp.exceptions.InvalidRequestException;
 
@@ -73,5 +72,28 @@ public class Mapper {
         return response;
     }
 
+    public static Budget toBudget(CreateBudgetRequest createBudgetRequest) {
+        Budget budget = new Budget();
+        budget.setUserId(createBudgetRequest.getUserId());
+        try {
+            budget.setCategory(Category.valueOf(createBudgetRequest.getCategory().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new InvalidRequestException("Invalid category value");
+        }
+        budget.setLimitAmount(createBudgetRequest.getLimitAmount());
+        budget.setStartDate(createBudgetRequest.getStartDate());
+        budget.setEndDate(createBudgetRequest.getEndDate());
+        return budget;
+    }
 
+    public static CreateBudgetResponse toCreatBudgetResponse(Budget budget) {
+        CreateBudgetResponse response = new CreateBudgetResponse();
+        response.setId(budget.getId());
+        response.setCategory(budget.getCategory().toString());
+        response.setLimitAmount(budget.getLimitAmount());
+        response.setStartDate(budget.getStartDate());
+        response.setEndDate(budget.getEndDate());
+        response.setCurrentSpent(budget.getCurrentSpent());
+        return response;
+    }
 }
