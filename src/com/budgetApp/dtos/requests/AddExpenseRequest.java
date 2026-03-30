@@ -9,6 +9,7 @@ public class AddExpenseRequest {
 
     private String userId;
     private double amount;
-    private String source;
+    private String category;
+    private String description;
     private LocalDate date;
 }
