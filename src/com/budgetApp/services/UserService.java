@@ -68,6 +68,13 @@ public class UserService {
         return Mapper.toUserResponse(savedUser);
     }
 
+    public void deleteUser(String id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User with ID " + id + " not found");
+        }
+        userRepository.deleteById(id);
+    }
+
     private void validateUserRequest(CreateUserRequest request) {
         if (request.getName() == null || request.getName().trim().isEmpty()) {
             throw new InvalidNameException("Username cannot be empty");

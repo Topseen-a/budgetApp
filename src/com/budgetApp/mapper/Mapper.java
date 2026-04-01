@@ -34,7 +34,6 @@ public class Mapper {
         income.setUserId(addIncomeRequest.getUserId());
         income.setAmount(addIncomeRequest.getAmount());
         income.setSource(addIncomeRequest.getSource());
-        income.setAmount(addIncomeRequest.getAmount());
         income.setDate(addIncomeRequest.getDate());
         return income;
     }
