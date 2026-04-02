@@ -43,7 +43,7 @@ public class UserService {
     }
 
     public CreateUserResponse getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email.trim())
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
         return Mapper.toUserResponse(user);
     }
@@ -86,7 +86,7 @@ public class UserService {
             throw new InvalidEmailException("Email format is invalid");
         }
         if (request.getPassword() == null || request.getPassword().trim().isEmpty() || request.getPassword().length() < 6) {
-            throw new InvalidPasswordException("Password cannot be empty");
+            throw new InvalidPasswordException("Password must be at least 6 characters");
         }
     }
 }
