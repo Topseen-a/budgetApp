@@ -43,7 +43,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testThatA_userIsCreatedWithAnEmptyNameThrowsAnError() {
+    public void testThatA_userIsCreatedWithAnEmptyNameThrowsException() {
         CreateUserRequest request = new CreateUserRequest();
         request.setName("");
         request.setEmail("oluwaseun@gmail.com");
@@ -53,7 +53,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testThatA_userIsCreatedWithAnInvalidEmailThrowsAnError() {
+    public void testThatA_userIsCreatedWithAnInvalidEmailThrowsException() {
         CreateUserRequest request = new CreateUserRequest();
         request.setName("Oluwaseun");
         request.setEmail("oluwaseun.com");
@@ -63,7 +63,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testThatAnotherUserIsCreatedWithTheSameEmailThrowsAnError() {
+    public void testThatAnotherUserIsCreatedWithTheSameEmailThrowsExceptionr() {
         CreateUserRequest request = new CreateUserRequest();
         request.setName("Oluwaseun");
         request.setEmail("oluwaseun@gmail.com");
@@ -80,7 +80,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testThatA_userWithAnInvalidPasswordThrowsAnError() {
+    public void testThatA_userWithAnInvalidPasswordThrowsException() {
         CreateUserRequest request = new CreateUserRequest();
         request.setName("Oluwaseun");
         request.setEmail("oluwaseun@gmail.com");
@@ -225,7 +225,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testThatUpdatingToExistingEmailThrowsAnError() {
+    public void testThatUpdatingToExistingEmailThrowsException() {
         CreateUserRequest requestOne = new CreateUserRequest();
         requestOne.setName("Oluwaseun");
         requestOne.setEmail("oluwaseun@gmail.com");
@@ -249,7 +249,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testThatUpdatingWithInvalidEmailThrowsError() {
+    public void testThatUpdatingWithInvalidEmailThrowsException() {
         CreateUserRequest request = new CreateUserRequest();
         request.setName("Oluwaseun");
         request.setEmail("oluwaseun@gmail.com");
@@ -266,7 +266,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testThatUpdatingWithEmptyNameThrowsError() {
+    public void testThatUpdatingWithEmptyNameThrowsException() {
         CreateUserRequest request = new CreateUserRequest();
         request.setName("Oluwaseun");
         request.setEmail("oluwaseun@gmail.com");
@@ -340,7 +340,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testThatDeletingA_taskThatDoesNotExistThrowsError() {
+    public void testThatDeletingA_taskThatDoesNotExistThrowsException() {
         CreateUserRequest request = new CreateUserRequest();
         request.setName("Oluwaseun");
         request.setEmail("oluwaseun@gmail.com");
