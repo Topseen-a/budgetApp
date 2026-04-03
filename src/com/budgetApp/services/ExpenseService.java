@@ -1,7 +1,9 @@
 package com.budgetApp.services;
 
+import com.budgetApp.data.models.Budget;
 import com.budgetApp.data.models.Expense;
 import com.budgetApp.data.models.User;
+import com.budgetApp.data.repositories.BudgetRepository;
 import com.budgetApp.data.repositories.ExpenseRepository;
 import com.budgetApp.data.repositories.UserRepository;
 import com.budgetApp.dtos.requests.AddExpenseRequest;
@@ -19,6 +21,7 @@ public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
+    private final BudgetRepository budgetRepository;
 
     public AddExpenseResponse addExpense(AddExpenseRequest request) {
         validateExpenseRequest(request);
@@ -31,6 +34,8 @@ public class ExpenseService {
 
         user.getExpenseIds().add(savedExpense.getId());
         userRepository.save(user);
+
+        updateBudgetsForExpense(savedExpense);
 
         return Mapper.toExpenseResponse(savedExpense);
     }
@@ -66,6 +71,9 @@ public class ExpenseService {
         existingExpense.setDate(updatedExpense.getDate());
 
         Expense savedExpense = expenseRepository.save(existingExpense);
+
+        updateBudgetsForExpense(savedExpense);
+
         return Mapper.toExpenseResponse(savedExpense);
     }
 
@@ -80,6 +88,8 @@ public class ExpenseService {
         userRepository.save(user);
 
         expenseRepository.deleteById(id);
+
+        updateBudgetsAfterExpenseDeletion(expense);
     }
 
     private void validateExpenseRequest(AddExpenseRequest request) {
@@ -95,5 +105,31 @@ public class ExpenseService {
         if (request.getDate() == null) {
             throw new InvalidRequestException("Date cannot be empty");
         }
+    }
+
+    private void updateBudgetsForExpense(Expense expense) {
+        List<Budget> budgets = budgetRepository.findByUserId(expense.getUserId());
+
+        for (Budget budget : budgets) {
+            boolean isCategoryMatch = expense.getCategory().toString().equalsIgnoreCase(budget.getCategory().toString());
+            boolean isDateMatch = !expense.getDate().isBefore(budget.getStartDate()) &&
+                    !expense.getDate().isAfter(budget.getEndDate());
+
+            if (isCategoryMatch && isDateMatch) {
+                double totalSpent = expenseRepository.findByUserId(expense.getUserId())
+                        .stream()
+                        .filter(e -> e.getCategory().toString().equalsIgnoreCase(budget.getCategory().toString()))
+                        .filter(e -> !e.getDate().isBefore(budget.getStartDate()) && !e.getDate().isAfter(budget.getEndDate()))
+                        .mapToDouble(Expense::getAmount)
+                        .sum();
+
+                budget.setCurrentSpent(totalSpent);
+                budgetRepository.save(budget);
+            }
+        }
+    }
+
+    private void updateBudgetsAfterExpenseDeletion(Expense expense) {
+        updateBudgetsForExpense(expense);
     }
 }
