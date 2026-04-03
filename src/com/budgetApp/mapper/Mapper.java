@@ -15,8 +15,8 @@ public class Mapper {
 
     public static User toUser(CreateUserRequest createUserRequest) {
         User user = new User();
-        user.setName(createUserRequest.getName());
-        user.setEmail(createUserRequest.getEmail());
+        user.setName(createUserRequest.getName().trim());
+        user.setEmail(createUserRequest.getEmail().trim());
         user.setPassword(createUserRequest.getPassword());
         return user;
     }
@@ -24,8 +24,8 @@ public class Mapper {
     public static CreateUserResponse toUserResponse(User user) {
         CreateUserResponse response = new CreateUserResponse();
         response.setId(user.getId());
-        response.setName(user.getName());
-        response.setEmail(user.getEmail());
+        response.setName(user.getName().trim());
+        response.setEmail(user.getEmail().trim());
         return response;
     }
 
@@ -85,7 +85,7 @@ public class Mapper {
         return budget;
     }
 
-    public static CreateBudgetResponse toCreatBudgetResponse(Budget budget) {
+    public static CreateBudgetResponse toBudgetResponse(Budget budget) {
         CreateBudgetResponse response = new CreateBudgetResponse();
         response.setId(budget.getId());
         response.setCategory(budget.getCategory().toString());
