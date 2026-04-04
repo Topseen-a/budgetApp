@@ -25,6 +25,8 @@ public class BudgetController {
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (UserNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (BudgetAlreadyExistsException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (InvalidRequestException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
