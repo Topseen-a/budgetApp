@@ -69,4 +69,16 @@ public class BudgetController {
             return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/exceeded/{id}")
+    public ResponseEntity<?> isBudgetExceeded(@PathVariable String id) {
+        try {
+            boolean result = budgetService.isBudgetExceeded(id);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (BudgetNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
