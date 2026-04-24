@@ -8,8 +8,8 @@ import java.time.LocalDate;
 public class AddIncomeResponse {
 
     private String id;
+    private String userId;
     private double amount;
     private String source;
     private LocalDate date;
-
 }

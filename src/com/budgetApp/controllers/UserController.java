@@ -2,10 +2,7 @@ package com.budgetApp.controllers;
 
 import com.budgetApp.dtos.requests.CreateUserRequest;
 import com.budgetApp.dtos.responses.CreateUserResponse;
-import com.budgetApp.exceptions.EmailAlreadyExistsException;
-import com.budgetApp.exceptions.InvalidEmailException;
-import com.budgetApp.exceptions.InvalidNameException;
-import com.budgetApp.exceptions.UserNotFoundException;
+import com.budgetApp.exceptions.*;
 import com.budgetApp.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -28,7 +26,7 @@ public class UserController {
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (EmailAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        } catch (InvalidNameException e) {
+        } catch (InvalidNameException | InvalidEmailException | InvalidPasswordException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -80,6 +78,8 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (EmailAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (InvalidNameException | InvalidEmailException | InvalidPasswordException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -89,9 +89,9 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable String id) {
         try {
             userService.deleteUser(id);
-            return new ResponseEntity<>("User deleted successfully",HttpStatus.OK);
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
         } catch (UserNotFoundException e) {
-            return new  ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -41,6 +41,7 @@ public class Mapper {
     public static AddIncomeResponse toIncomeResponse(Income income) {
         AddIncomeResponse response = new AddIncomeResponse();
         response.setId(income.getId());
+        response.setUserId(income.getUserId());
         response.setAmount(income.getAmount());
         response.setSource(income.getSource());
         response.setDate(income.getDate());
@@ -64,6 +65,7 @@ public class Mapper {
     public static AddExpenseResponse toExpenseResponse(Expense expense) {
         AddExpenseResponse response = new AddExpenseResponse();
         response.setId(expense.getId());
+        response.setUserId(expense.getUserId());
         response.setAmount(expense.getAmount());
         response.setCategory(expense.getCategory().toString());
         response.setDescription(expense.getDescription());

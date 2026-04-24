@@ -63,6 +63,13 @@ public class ExpenseService {
         Expense existingExpense = expenseRepository.findById(id)
                 .orElseThrow(() -> new ExpenseNotFoundException("Expense not found"));
 
+        Expense oldExpenseSnapshot = new Expense();
+        oldExpenseSnapshot.setUserId(existingExpense.getUserId());
+        oldExpenseSnapshot.setCategory(existingExpense.getCategory());
+        oldExpenseSnapshot.setDate(existingExpense.getDate());
+        oldExpenseSnapshot.setAmount(existingExpense.getAmount());
+        oldExpenseSnapshot.setDescription(existingExpense.getDescription());
+
         Expense updatedExpense = Mapper.toExpense(request);
 
         existingExpense.setAmount(updatedExpense.getAmount());
@@ -71,6 +78,8 @@ public class ExpenseService {
         existingExpense.setDate(updatedExpense.getDate());
 
         Expense savedExpense = expenseRepository.save(existingExpense);
+
+        updateBudgetsForExpense(oldExpenseSnapshot);
 
         updateBudgetsForExpense(savedExpense);
 
@@ -111,15 +120,18 @@ public class ExpenseService {
         List<Budget> budgets = budgetRepository.findByUserId(expense.getUserId());
 
         for (Budget budget : budgets) {
-            boolean isCategoryMatch = expense.getCategory().toString().equalsIgnoreCase(budget.getCategory().toString());
+            boolean isCategoryMatch = expense.getCategory().toString()
+                    .equalsIgnoreCase(budget.getCategory().toString());
             boolean isDateMatch = !expense.getDate().isBefore(budget.getStartDate()) &&
                     !expense.getDate().isAfter(budget.getEndDate());
 
             if (isCategoryMatch && isDateMatch) {
                 double totalSpent = expenseRepository.findByUserId(expense.getUserId())
                         .stream()
-                        .filter(e -> e.getCategory().toString().equalsIgnoreCase(budget.getCategory().toString()))
-                        .filter(e -> !e.getDate().isBefore(budget.getStartDate()) && !e.getDate().isAfter(budget.getEndDate()))
+                        .filter(e -> e.getCategory().toString()
+                                .equalsIgnoreCase(budget.getCategory().toString()))
+                        .filter(e -> !e.getDate().isBefore(budget.getStartDate())
+                                && !e.getDate().isAfter(budget.getEndDate()))
                         .mapToDouble(Expense::getAmount)
                         .sum();
 

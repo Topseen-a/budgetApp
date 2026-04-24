@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public class AddExpenseResponse {
 
     private String id;
+    private String userId;
     private double amount;
     private String category;
     private String description;

@@ -1,6 +1,5 @@
 package com.budgetApp.data.repositories;
 
-import com.budgetApp.data.models.Category;
 import com.budgetApp.data.models.Expense;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

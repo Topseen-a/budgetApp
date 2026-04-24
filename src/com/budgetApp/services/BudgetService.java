@@ -40,12 +40,7 @@ public class BudgetService {
 
         Budget budget = Mapper.toBudget(request);
 
-        double totalSpent = expenseRepository.findByUserId(request.getUserId())
-                .stream()
-                .filter(expense -> expense.getCategory().toString().equalsIgnoreCase(request.getCategory()))
-                .filter(expense -> !expense.getDate().isBefore(request.getStartDate()) && !expense.getDate().isAfter(request.getEndDate()))
-                .mapToDouble(Expense::getAmount)
-                .sum();
+        double totalSpent = calculateSpent(request.getUserId(), request.getCategory(), budget);
 
         budget.setCurrentSpent(totalSpent);
 
@@ -80,6 +75,9 @@ public class BudgetService {
         budget.setStartDate(updated.getStartDate());
         budget.setEndDate(updated.getEndDate());
 
+        double totalSpent = calculateSpent(budget.getUserId(), budget.getCategory().toString(), budget);
+        budget.setCurrentSpent(totalSpent);
+
         Budget saved = budgetRepository.save(budget);
         return Mapper.toBudgetResponse(saved);
     }
@@ -102,6 +100,16 @@ public class BudgetService {
                 .orElseThrow(() -> new BudgetNotFoundException("Budget not found"));
 
         return budget.getCurrentSpent() > budget.getLimitAmount();
+    }
+
+    private double calculateSpent(String userId, String category, Budget budget) {
+        return expenseRepository.findByUserId(userId)
+                .stream()
+                .filter(expense -> expense.getCategory().toString().equalsIgnoreCase(category))
+                .filter(expense -> !expense.getDate().isBefore(budget.getStartDate())
+                        && !expense.getDate().isAfter(budget.getEndDate()))
+                .mapToDouble(Expense::getAmount)
+                .sum();
     }
 
     private void validateBudgetRequest(CreateBudgetRequest request) {
